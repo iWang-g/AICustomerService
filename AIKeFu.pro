@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    src/views/SettingDialog.cpp \
     src\controllers\MainController.cpp \
     src\models\PlatformModel.cpp \
     src\views\MainWindowView.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    src/views/SettingDialog.h \
     src\controllers\MainController.h \
     src\models\PlatformModel.h \
     src\views\MainWindowView.h \

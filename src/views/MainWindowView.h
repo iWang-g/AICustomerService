@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QMainWindow>
+// #include "SettingDialog.h"
+#include <QToolButton>
 
 class QTreeView;
 class QStandardItemModel;
@@ -62,4 +64,17 @@ private:
     QFrame* m_readyCard = nullptr;              ///< 就绪卡片
     QLabel* m_readyTitle = nullptr;             ///< 就绪标题
     QLabel* m_readySubtitle = nullptr;          ///< 就绪副标题
+#if 0
+    // ------day2.3 待重写------
+private:
+    QToolButton* m_settingBtn = nullptr;       // 设置按钮
+    SettingDialog* m_settingDialog = nullptr; // 设置对话框
+    QFrame *m_settingFrame;  // 保存 settingFrame 的指针，用于事件过滤器中判断
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+private slots:
+    // 设置按钮点击事件（弹出设置对话框）
+    void onSettingBtnClicked();
+    // ------------------------
+#endif
 };

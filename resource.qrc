@@ -28,5 +28,6 @@
         <file>res/Reception.png</file>
         <file>res/Robot.png</file>
         <file>res/manageConsole.png</file>
+        <file>res/Settings/Settings.png</file>
     </qresource>
 </RCC>

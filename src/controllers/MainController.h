@@ -27,6 +27,7 @@ private slots:
     void onRequestAutoEmbed();           ///< 响应自动嵌入请求
     void onRequestAdd();                 ///< 响应添加请求
     void onRequestRefresh();             ///< 响应刷新请求
+    void onRequestSettings();            ///< 响应设置请求
     void onPlatformGroupClicked(int row); ///< 响应平台分组点击
     void onPlatformSelected(const QString& id); ///< 响应平台选择
 

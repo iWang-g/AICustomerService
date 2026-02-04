@@ -3,6 +3,9 @@
 #include "../models/PlatformModel.h"
 #include "../views/MainWindowView.h"
 #include "../views/AddWindowDialogView.h"
+#include "../views/SettingDialog.h"
+#include "../views/RobotManageDialog.h"
+#include "../views/GroupReceptionDialog.h"
 
 #include <QMessageBox>
 #include <QStatusBar>
@@ -24,6 +27,7 @@ MainController::MainController(QObject* parent)
     connect(m_view, &MainWindowView::requestAutoEmbed, this, &MainController::onRequestAutoEmbed);
     connect(m_view, &MainWindowView::requestAdd, this, &MainController::onRequestAdd);
     connect(m_view, &MainWindowView::requestRefresh, this, &MainController::onRequestRefresh);
+    connect(m_view, &MainWindowView::requestSettings, this, &MainController::onRequestSettings);
     connect(m_view, &MainWindowView::platformGroupClicked, this, &MainController::onPlatformGroupClicked);
     connect(m_view, &MainWindowView::platformSelected, this, &MainController::onPlatformSelected);
 }
@@ -66,6 +70,21 @@ void MainController::onRequestRefresh()
 }
 
 /**
+ * @brief 响应设置请求
+ */
+void MainController::onRequestSettings()
+{
+    // 弹出设置对话框
+    static SettingDialog* settingDialog = nullptr;
+    if (!settingDialog) {
+        settingDialog = new SettingDialog(m_view);
+    }
+    settingDialog->show();
+    settingDialog->raise();
+    settingDialog->activateWindow();
+}
+
+/**
  * @brief 响应平台分组点击
  * @param row 点击的分组行索引
  */
@@ -81,7 +100,24 @@ void MainController::onPlatformGroupClicked(int row)
  */
 void MainController::onPlatformSelected(const QString& id)
 {
-    // 根据选择的平台ID更新状态栏消息
+    if (id == QLatin1String("managerobot")) {
+        static RobotManageDialog* robotDlg = nullptr;
+        if (!robotDlg)
+            robotDlg = new RobotManageDialog(m_view);
+        robotDlg->show();
+        robotDlg->raise();
+        robotDlg->activateWindow();
+        return;
+    }
+    if (id == QLatin1String("groupreception")) {
+        static GroupReceptionDialog* receptionDlg = nullptr;
+        if (!receptionDlg)
+            receptionDlg = new GroupReceptionDialog(m_view);
+        receptionDlg->show();
+        receptionDlg->raise();
+        receptionDlg->activateWindow();
+        return;
+    }
     if (id.isEmpty())
         m_view->statusBar()->showMessage(QStringLiteral("就绪"));
     else if (id == QLatin1String("online"))

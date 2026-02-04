@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QMainWindow>
-// #include "SettingDialog.h"
 #include <QToolButton>
 
 class QTreeView;
@@ -34,6 +33,7 @@ signals:
     void requestAutoEmbed();                    ///< "自动嵌入窗口"
     void requestAdd();                          ///< 顶部"+"
     void requestRefresh();                      ///< 顶部刷新
+    void requestSettings();                     ///< 设置按钮点击
     void platformGroupClicked(int row);         ///< 左侧平台分组点击（兼容）
     void platformSelected(const QString& id);   ///< 左侧选中平台（qq/workwechat/qianniu/online）
 
@@ -60,21 +60,11 @@ private:
     QToolButton* m_btnRefresh = nullptr;        ///< 刷新按钮
     QToolButton* m_btnQuickStart = nullptr;     ///< 快速启动按钮
 
+    // 左侧边栏按钮
+    QToolButton* m_btnSettings = nullptr;       ///< 设置按钮
+
     // 就绪页面组件
     QFrame* m_readyCard = nullptr;              ///< 就绪卡片
     QLabel* m_readyTitle = nullptr;             ///< 就绪标题
     QLabel* m_readySubtitle = nullptr;          ///< 就绪副标题
-#if 0
-    // ------day2.3 待重写------
-private:
-    QToolButton* m_settingBtn = nullptr;       // 设置按钮
-    SettingDialog* m_settingDialog = nullptr; // 设置对话框
-    QFrame *m_settingFrame;  // 保存 settingFrame 的指针，用于事件过滤器中判断
-protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
-private slots:
-    // 设置按钮点击事件（弹出设置对话框）
-    void onSettingBtnClicked();
-    // ------------------------
-#endif
 };

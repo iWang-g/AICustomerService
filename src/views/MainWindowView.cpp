@@ -392,64 +392,28 @@ QWidget* MainWindowView::buildLeftSidebar()
     m_platformTree->expandAll();  // 展开所有项
 
     layout->addWidget(m_platformTree);
-    // layout->addStretch(1); // 添加伸缩空间
 
-#if 0
-    // ---------------------- 新增：设置按钮 day2.3 待重写----------------------
-    layout->addStretch(1); // 伸缩空间将按钮推到底部
+    // 添加伸缩空间，将设置按钮推到底部
+    layout->addStretch(1);
 
-    // 设置按钮容器（匹配现有分组项样式）
-    auto* settingFrame = new QFrame(left);
-    settingFrame->setObjectName("settingFrame");
-    settingFrame->setCursor(Qt::PointingHandCursor); // 手型光标
-    settingFrame->setStyleSheet(R"(
-    QFrame#settingFrame {
-        background-color: #F5F5F7;
-        border-radius: 8px;
-        margin-top: 8px;
-    }
-    QFrame#settingFrame:hover {
-        background-color: #E8E8EB;
-    }
-    QFrame#settingFrame:pressed {
-        background-color: #DFDFE2;
-    }
-)");
+    // 创建设置按钮
+    m_btnSettings = new QToolButton(left);
+    m_btnSettings->setObjectName("settingsButton");
+    m_btnSettings->setText(QStringLiteral("设置"));
+    m_btnSettings->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    const QIcon iconSettings = QIcon(":/res/Settings/Settings.png");
+    // m_btnSettings->setIcon(qApp->style()->standardIcon(QStyle::SP_FileDialogStart));
+    m_btnSettings->setIcon(iconSettings);
+    m_btnSettings->setCursor(Qt::PointingHandCursor);
+    m_btnSettings->setAutoRaise(false);
+    m_btnSettings->setFixedHeight(48);
 
-    auto* settingLayout = new QHBoxLayout(settingFrame);
-    settingLayout->setContentsMargins(12, 10, 12, 10);
-    settingLayout->setSpacing(8);
+    // 连接设置按钮信号
+    connect(m_btnSettings, &QToolButton::clicked, this, &MainWindowView::requestSettings);
 
-    // 设置按钮图标（Qt6 系统标准图标占位）
-    auto* settingIcon = new QLabel(settingFrame);
-    settingIcon->setFixedSize(20, 20);
-    settingIcon->setPixmap(qApp->style()->standardIcon(QStyle::SP_FileDialogStart)
-                               .pixmap(20, 20, QIcon::Normal, QIcon::On)); // Qt6 图标渲染
+    layout->addWidget(m_btnSettings);
 
-    // 设置按钮文本
-    auto* settingText = new QLabel(QStringLiteral("系统设置"), settingFrame);
-    settingText->setStyleSheet(R"(
-    QLabel {
-        font-size: 14px;
-        font-weight: bold;
-        color: #333333;
-    }
-)");
-
-    settingLayout->addWidget(settingIcon, 0, Qt::AlignVCenter);
-    settingLayout->addWidget(settingText, 0, Qt::AlignVCenter);
-    settingLayout->addStretch(1); // 文本居左
-
-    // 绑定点击事件
-    connect(settingFrame, &QFrame::mouseReleaseEvent, this, [this](QMouseEvent*) {
-        this->onSettingBtnClicked();
-    });
-
-    // 添加到侧边栏布局
-    layout->addWidget(settingFrame);
-    // ---------------------------------------------------------
-#endif
-
+    // 树视图在展开/折叠时动态调整高度
     updateTreeViewHeight();
 
     // 连接选择变化信号
@@ -712,6 +676,16 @@ void MainWindowView::onPlatformTreeSelectionChanged()
         emit platformSelected(id);
         return;
     }
+    if (id == QLatin1String("managerobot")) {
+        m_centerStack->setCurrentIndex(0);
+        emit platformSelected(id);
+        return;
+    }
+    if (id == QLatin1String("groupreception")) {
+        m_centerStack->setCurrentIndex(0);
+        emit platformSelected(id);
+        return;
+    }
 
     // 默认显示就绪页面
     m_centerStack->setCurrentIndex(0);
@@ -767,6 +741,24 @@ void MainWindowView::applyStyle()
         }
         /* 平台树的每个项也设置为透明背景 */
         QTreeView#platformList::item { background: transparent; }
+
+        /* 设置按钮样式：匹配分组项样式 */
+        QToolButton#settingsButton {
+            background: #F5F5F7;
+            border: none;
+            border-radius: 8px;
+            color: #333333;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 12px;
+        }
+        QToolButton#settingsButton:hover {
+            background: #E8E8EB;
+        }
+        QToolButton#settingsButton:pressed {
+            background: #DFDFE2;
+        }
 
         /* ----- 3. 顶部栏区域（包含平台管理标题和操作按钮） ----- */
         /* 顶部栏：白色背景，底部浅灰色分隔线 */
@@ -871,42 +863,3 @@ void MainWindowView::applyStyle()
         }
     )QSS"));
 }
-
-#if 0
-    // ------day2.3 待重写------
-/**
- * @brief 设置按钮点击事件：弹出设置对话框
- * 槽函数应在control层被触发，view层只发出信号
- */
-void MainWindowView::onSettingBtnClicked()
-{
-    // 单例模式：避免重复创建对话框
-    if (!m_settingDialog) {
-        m_settingDialog = new SettingDialog(this);
-    }
-    // 窗口置顶显示
-    m_settingDialog->show();
-    m_settingDialog->raise();
-    m_settingDialog->activateWindow();
-}
-
-bool MainWindowView::eventFilter(QObject *watched, QEvent *event)
-{
-    Q_UNUSED(watched);
-    Q_UNUSED(event);
-
-    // 判断是否是目标控件 + 鼠标释放事件
-    // if (watched == m_settingFrame && event->type() == QEvent::MouseButtonRelease) {
-    //     QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-    //     // 执行你的鼠标释放逻辑
-    //     qDebug() << "设置框架被鼠标释放了，位置：" << mouseEvent->pos();
-    //     // 你的业务代码...
-    //     SettingDialog dlg;
-    //     dlg.exec();  // 模态显示对话框
-    //     return true;  // 返回 true 表示事件已处理（根据需求选择是否返回）
-    // }
-    // // 其他事件交给父类处理
-    // return QWidget::eventFilter(watched, event);
-}
-    // ------------------------
-#endif

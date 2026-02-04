@@ -12,6 +12,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     src/views/SettingDialog.cpp \
+    src/views/RobotManageDialog.cpp \
+    src/views/GroupReceptionDialog.cpp \
     src\controllers\MainController.cpp \
     src\models\PlatformModel.cpp \
     src\views\MainWindowView.cpp \
@@ -20,6 +22,8 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     src/views/SettingDialog.h \
+    src/views/RobotManageDialog.h \
+    src/views/GroupReceptionDialog.h \
     src\controllers\MainController.h \
     src\models\PlatformModel.h \
     src\views\MainWindowView.h \
